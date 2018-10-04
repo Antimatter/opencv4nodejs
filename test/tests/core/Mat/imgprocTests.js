@@ -1549,5 +1549,38 @@ module.exports = (getTestImg) => {
         }
       });
     });
+
+    describe('undistort', () => {
+      const img = new cv.Mat(32, 16, cv.CV_8UC3);
+
+      const expectOutput = (undistorted) => {
+        assertMetaData(undistorted)(img.rows, img.cols, img.type);
+      };
+
+      const getCameraMatrix = (f) => new cv.Mat(
+        [
+          [f, 0, 0.5*img.cols],
+          [0, f, 0.5*img.rows],
+          [0, 0, 1]
+        ],
+        cv.CV_64F
+      );
+
+      const distCoeffs = [ 0.01, 0, 0, 0 ];
+
+      generateAPITests({
+        getDut: () => img,
+        methodName: 'undistort',
+        methodNameSpace: 'Mat',
+        getRequiredArgs: () => ([
+          getCameraMatrix(1),
+          distCoeffs
+        ]),
+        getOptionalArgs: () => ([
+          getCameraMatrix(0.8)
+        ]),
+        expectOutput
+      });
+    });
   });
 };
