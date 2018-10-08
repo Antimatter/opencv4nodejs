@@ -1549,7 +1549,9 @@ module.exports = (getTestImg) => {
         }
       });
     });
+  });
 
+  describe('distortion mapping', () => {
     describe('undistort', () => {
       const img = new cv.Mat(32, 16, cv.CV_8UC3);
 
@@ -1578,6 +1580,45 @@ module.exports = (getTestImg) => {
         ]),
         getOptionalArgs: () => ([
           getCameraMatrix(0.8)
+        ]),
+        expectOutput
+      });
+    });
+
+    describe('remap', () => {
+      let img, map1, map2;
+
+      before(() => {
+        const sx = 32;
+        const sy = 16;
+        img = new cv.Mat(sx, sy, cv.CV_8UC3);
+        let pxy = [];
+        for (let x = 0; x < sx; x++) {
+          pxy[x] = [];
+          for (let y = 0; y < sy; y++) {
+            pxy[x][y] = [x + 0.5, y - 0.25 ];
+          }
+        }
+        map1 = new cv.Mat(pxy, cv.CV_32FC2);
+        map2 = new cv.Mat();
+      });
+
+      const expectOutput = (remapped) => {
+        assertMetaData(remapped)(img.rows, img.cols, img.type);
+      };
+
+      generateAPITests({
+        getDut: () => img,
+        methodName: 'remap',
+        methodNameSpace: 'Mat',
+        getRequiredArgs: () => ([
+          map1
+        ]),
+        getOptionalArgsMap: () => ([
+          ['map2', map2],
+          ['interpolation', cv.INTER_LINEAR],
+          ['borderMode', cv.BORDER_CONSTANT],
+          ['borderValue', new cv.Vec(255, 255, 255)]
         ]),
         expectOutput
       });

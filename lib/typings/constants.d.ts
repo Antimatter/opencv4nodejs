@@ -442,6 +442,8 @@ export const NORM_L2SQR: number;
 export const NORM_MINMAX: number;
 export const NORM_RELATIVE: number;
 export const NORM_const_MASK: number;
+export const PROJ_SPHERICAL_ORTHO: number;
+export const PROJ_SPHERICAL_EQRECT: number;
 export const RANSAC: number;
 export const REGULAR: number;
 export const RETR_CCOMP: number;

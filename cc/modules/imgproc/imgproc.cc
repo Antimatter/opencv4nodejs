@@ -29,6 +29,8 @@ NAN_MODULE_INIT(Imgproc::Init) {
   Nan::SetMethod(target, "getPerspectiveTransform", GetPerspectiveTransform);
   Nan::SetMethod(target, "getTextSize", GetTextSize);
   Nan::SetMethod(target, "getTextSizeAsync", GetTextSizeAsync);
+  Nan::SetMethod(target, "initUndistortRectifyMap", InitUndistortRectifyMap);
+  Nan::SetMethod(target, "initUndistortRectifyMapAsync", InitUndistortRectifyMapAsync);
 #if CV_VERSION_MINOR > 1
   Nan::SetMethod(target, "canny", Canny);
 #endif
@@ -272,6 +274,22 @@ NAN_METHOD(Imgproc::GetTextSizeAsync) {
   FF::AsyncBinding(
     std::make_shared<ImgprocBindings::GetTextSizeWorker>(),
     "Imgproc::GetTextSizeAsync",
+    info
+  );
+}
+
+NAN_METHOD(Imgproc::InitUndistortRectifyMap) {
+  FF::SyncBinding(
+    std::make_shared<ImgprocBindings::InitUndistortRectifyMapWorker>(),
+    "Imgproc::InitUndistortRectifyMap",
+    info
+  );
+}
+
+NAN_METHOD(Imgproc::InitUndistortRectifyMapAsync) {
+  FF::AsyncBinding(
+    std::make_shared<ImgprocBindings::InitUndistortRectifyMapWorker>(),
+    "Imgproc::InitUndistortRectifyMapAsync",
     info
   );
 }

@@ -2144,7 +2144,7 @@ namespace MatImgprocBindings {
     }
   };
 
-    struct UndistortWorker: public CatchCvExceptionWorker {
+  struct UndistortWorker: public CatchCvExceptionWorker {
   public:
     cv::Mat mat;
 
@@ -2179,6 +2179,60 @@ namespace MatImgprocBindings {
     }
   };
 
+  struct RemapWorker: public CatchCvExceptionWorker {
+  public:
+    cv::Mat mat;
+
+    RemapWorker(cv::Mat mat) {
+      this->mat = mat;
+    }
+
+    cv::Mat map1;
+    cv::Mat map2 = cv::noArray().getMat();
+    int interpolation = cv::INTER_LINEAR;
+    int borderMode = cv::BORDER_CONSTANT;
+    cv::Vec3d borderValue = cv::Vec3d();
+
+    cv::Mat remapMat;
+
+    std::string executeCatchCvExceptionWorker() {
+      cv::remap(mat, remapMat, map1, map2, interpolation, borderMode, borderValue);
+      return "";
+    }
+
+    FF_VAL getReturnValue() {
+      return Mat::Converter::wrap(remapMat);
+    }
+
+    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        Mat::Converter::arg(0, &map1, info)
+      );
+    }
+
+    bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        Mat::Converter::optArg(1, &map2, info) ||
+        IntConverter::optArg(2, &interpolation, info) ||
+        IntConverter::optArg(3, &borderMode, info) ||
+        Vec3::Converter::optArg(4, &borderValue, info)
+      );
+    }
+
+    bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return FF_ARG_IS_OBJECT(1) && !Mat::Converter::hasInstance(info[1]);
+    }
+
+    bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
+      FF_OBJ opts = info[1]->ToObject();
+      return (
+        Mat::Converter::optProp(&map2, "map2", opts) ||
+        IntConverter::optProp(&interpolation, "interpolation", opts) ||
+        IntConverter::optProp(&borderMode, "borderMode", opts) ||
+		    Vec3::Converter::optProp(&borderValue, "borderValue", opts)
+      );
+    }
+  };
 }
 
 #endif

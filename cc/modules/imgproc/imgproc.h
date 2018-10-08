@@ -23,6 +23,8 @@ public:
   static NAN_METHOD(FitLine);
   static NAN_METHOD(GetTextSize);
   static NAN_METHOD(GetTextSizeAsync);
+  static NAN_METHOD(InitUndistortRectifyMap);
+  static NAN_METHOD(InitUndistortRectifyMapAsync);
 #if CV_VERSION_MINOR > 1
   static NAN_METHOD(Canny);
 #endif

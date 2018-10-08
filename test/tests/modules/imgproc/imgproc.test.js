@@ -211,4 +211,50 @@ describe('imgproc', () => {
       });
     });
   });
+
+  describe('initUndistortRectifyMap', () => {
+
+    const size = new cv.Size(64, 32);
+    const m1type = cv.CV_32FC1;
+
+    const expectOutput = (rmap) => {
+      assertMetaData(rmap.map1)(size.height, size.width, m1type);
+      assertMetaData(rmap.map2)(size.height, size.width, m1type);
+    };
+
+    const getCameraMatrix = (f) => new cv.Mat(
+      [
+        [f, 0, 0.5*size.width],
+        [0, f, 0.5*size.height],
+        [0, 0, 1]
+      ],
+      cv.CV_64F
+    );
+
+    const rectTransform = new cv.Mat(
+      [
+        [ 1, 0, 0 ],
+        [ 0, 1, 0 ],
+        [ 0, 0, 1 ]
+      ],
+      cv.CV_64F
+    );
+
+    const distCoeffs = [ 0.01, 0, 0, 0 ];
+
+    generateAPITests({
+      getDut: () => cv,
+      methodName: 'initUndistortRectifyMap',
+      getRequiredArgs: () => ([
+        getCameraMatrix(1),
+        distCoeffs,
+        rectTransform,
+        getCameraMatrix(0.8),
+        size,
+        m1type
+      ]),
+      hasAsync: true,
+      expectOutput
+    });
+  });
 });
