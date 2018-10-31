@@ -84,9 +84,10 @@ namespace ImgprocBindings {
     double alpha = 0.0f;
 
     cv::Mat map1, map2;
+    float retval;
 
     std::string executeCatchCvExceptionWorker() {
-      cv::initWideAngleProjMap(cameraMatrix, distCoeffs, imageSize, destImageWidth, m1type, map1, map2, projType, alpha);
+      retval = cv::initWideAngleProjMap(cameraMatrix, distCoeffs, imageSize, destImageWidth, m1type, map1, map2, projType, alpha);
       return "";
     }
 
@@ -94,6 +95,7 @@ namespace ImgprocBindings {
       v8::Local<v8::Object> ret = Nan::New<v8::Object>();
       Nan::Set(ret, Nan::New("map1").ToLocalChecked(), Mat::Converter::wrap(map1));
       Nan::Set(ret, Nan::New("map2").ToLocalChecked(), Mat::Converter::wrap(map2));
+      Nan::Set(ret, Nan::New("retval").ToLocalChecked(), DoubleConverter::wrap(retval));
       return ret;
     }
 
