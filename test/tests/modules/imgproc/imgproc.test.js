@@ -257,4 +257,45 @@ describe('imgproc', () => {
       expectOutput
     });
   });
+
+  describe('initWideAngleProjMap', () => {
+
+    const size = new cv.Size(64, 32);
+    const m1type = cv.CV_32FC1;
+
+    const cameraMatrix = new cv.Mat(
+      [
+        [1, 0, 0.5*size.width],
+        [0, 1, 0.5*size.height],
+        [0, 0, 1]
+      ],
+      cv.CV_64F
+    );
+
+    const distCoeffs = [ 0.01, 0, 0, 0 ];
+    const destImageWidth = 96;
+    const projType = cv.PROJ_SPHERICAL_ORTHO;
+    const alpha = 0.5;
+
+    const expectOutput = (rmap) => {
+      assertMetaData(rmap.map1)(destImageWidth, destImageWidth, m1type);
+      assertMetaData(rmap.map2)(destImageWidth, destImageWidth, m1type);
+    };
+
+    generateAPITests({
+      getDut: () => cv,
+      methodName: 'initWideAngleProjMap',
+      getRequiredArgs: () => ([
+        cameraMatrix,
+        distCoeffs,
+        size,
+        destImageWidth,
+        m1type,
+        projType,
+        alpha
+      ]),
+      hasAsync: true,
+      expectOutput
+    });
+  });
 });

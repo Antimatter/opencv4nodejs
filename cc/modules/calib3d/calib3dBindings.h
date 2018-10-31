@@ -828,7 +828,140 @@ namespace Calib3dBindings {
     }
   };
 #endif
+
+  struct FisheyeInitUndistortRectifyMapWorker : public CatchCvExceptionWorker {
+  public:
+    cv::Mat K;
+    std::vector<double> D;
+    cv::Mat R;
+    cv::Mat P;
+    cv::Size2d size;
+    int m1type;
+
+    cv::Mat map1, map2;
+
+    std::string executeCatchCvExceptionWorker() {
+      cv::fisheye::initUndistortRectifyMap(K, D, R, P, size, m1type, map1, map2);
+      return "";
+    }
+
+    v8::Local<v8::Value> getReturnValue() {
+      v8::Local<v8::Object> ret = Nan::New<v8::Object>();
+      Nan::Set(ret, Nan::New("map1").ToLocalChecked(), Mat::Converter::wrap(map1));
+      Nan::Set(ret, Nan::New("map2").ToLocalChecked(), Mat::Converter::wrap(map2));
+      return ret;
+    }
+
+    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        Mat::Converter::arg(0, &K, info) ||
+        DoubleArrayConverter::arg(1, &D, info) ||
+        Mat::Converter::arg(2, &R, info) ||
+        Mat::Converter::arg(3, &P, info) ||
+        Size::Converter::arg(4, &size, info) ||
+        IntConverter::arg(5, &m1type, info)
+      );
+    }
+  };
+
+  struct FisheyeCalibrateWorker : public CatchCvExceptionWorker {
+  public:
+    std::vector<std::vector<cv::Point3f>> objectPoints;
+    std::vector<std::vector<cv::Point2f>> imagePoints;
+    cv::Size2d imageSize;
+    cv::Mat cameraMatrix;
+    std::vector<double> distCoeffs;
+    int flags = 0;
+    cv::TermCriteria criteria = cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 100, DBL_EPSILON);
+
+    double returnValue;
+    std::vector<cv::Vec3d> rvecs;
+    std::vector<cv::Vec3d> tvecs;
   
+    std::string executeCatchCvExceptionWorker() {
+      returnValue = cv::fisheye::calibrate(objectPoints, imagePoints, imageSize, cameraMatrix, distCoeffs, rvecs, tvecs, flags, criteria);
+      return "";
+    }
+
+    v8::Local<v8::Value> getReturnValue() {
+      v8::Local<v8::Object> ret = Nan::New<v8::Object>();
+      Nan::Set(ret, Nan::New("returnValue").ToLocalChecked(), DoubleConverter::wrap(returnValue));
+      Nan::Set(ret, Nan::New("rvecs").ToLocalChecked(), ObjectArrayConverter<Vec3, cv::Vec3d>::wrap(rvecs));
+      Nan::Set(ret, Nan::New("tvecs").ToLocalChecked(), ObjectArrayConverter<Vec3, cv::Vec3d>::wrap(tvecs));
+      Nan::Set(ret, Nan::New("D").ToLocalChecked(), DoubleArrayConverter::wrap(distCoeffs));
+      return ret;
+    }
+
+    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        ObjectArrayOfArraysConverter<Point3, cv::Point3d, cv::Point3f>::arg(0, &objectPoints, info) ||
+        ObjectArrayOfArraysConverter<Point2, cv::Point2d, cv::Point2f>::arg(1, &imagePoints, info) ||
+        Size::Converter::arg(2, &imageSize, info) ||
+        Mat::Converter::arg(3, &cameraMatrix, info) ||
+        DoubleArrayConverter::arg(4, &distCoeffs, info)
+        );
+    }
+
+    bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        IntConverter::optArg(5, &flags, info) ||
+        TermCriteria::Converter::optArg(6, &criteria, info)
+        );
+    }
+
+    bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return FF_ARG_IS_OBJECT(5);
+    }
+
+    bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
+      v8::Local<v8::Object> opts = info[5]->ToObject();
+      return (
+        IntConverter::optProp(&flags, "flags", opts) ||
+        TermCriteria::Converter::optProp(&criteria, "criteria", opts)
+        );
+    }
+  };
+
+  struct FisheyeProjectPointsWorker : public CatchCvExceptionWorker {
+  public:
+    std::vector<cv::Point3d> objectPoints;
+    cv::Vec3d rvec;
+    cv::Vec3d tvec;
+    cv::Mat cameraMatrix;
+    std::vector<double> distCoeffs;
+    double alpha = 0;
+
+    std::vector<cv::Point2d> imagePoints;
+    cv::Mat jacobian;
+
+    std::string executeCatchCvExceptionWorker() {
+      cv::fisheye::projectPoints(objectPoints, imagePoints, rvec, tvec, cameraMatrix, distCoeffs, alpha, jacobian);
+      return "";
+    }
+
+    v8::Local<v8::Value> getReturnValue() {
+      v8::Local<v8::Object> ret = Nan::New<v8::Object>();
+      Nan::Set(ret, Nan::New("imagePoints").ToLocalChecked(), ObjectArrayConverter<Point2, cv::Point2d>::wrap(imagePoints));
+      Nan::Set(ret, Nan::New("jacobian").ToLocalChecked(), Mat::Converter::wrap(jacobian));
+      return ret;
+    }
+
+    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        ObjectArrayConverter<Point3, cv::Point3d>::arg(0, &objectPoints, info) ||
+        Vec3::Converter::arg(1, &rvec, info) ||
+        Vec3::Converter::arg(2, &tvec, info) ||
+        Mat::Converter::arg(3, &cameraMatrix, info) ||
+        DoubleArrayConverter::arg(4, &distCoeffs, info)
+      );
+    }
+
+    bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        DoubleConverter::optArg(5, &alpha, info)
+      );
+    }
+  };
 
 }
 

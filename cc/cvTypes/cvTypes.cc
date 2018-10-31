@@ -151,6 +151,9 @@ void CvTypes::Init(v8::Local<v8::Object> target) {
 	FF_SET_CV_CONSTANT(target, RANSAC);
 	FF_SET_CV_CONSTANT(target, RHO);
 
+	FF_SET_CV_CONSTANT(target, PROJ_SPHERICAL_EQRECT);
+	FF_SET_CV_CONSTANT(target, PROJ_SPHERICAL_ORTHO);
+
 	FF_SET_CV_CONSTANT(target, SOLVEPNP_ITERATIVE);
 	FF_SET_CV_CONSTANT(target, SOLVEPNP_EPNP);
 	FF_SET_CV_CONSTANT(target, SOLVEPNP_P3P);
@@ -209,4 +212,18 @@ void CvTypes::Init(v8::Local<v8::Object> target) {
 	FF_SET_CV_CONSTANT(target, ROTATE_180);
 	FF_SET_CV_CONSTANT(target, ROTATE_90_COUNTERCLOCKWISE);
 #endif
+
+	v8::Local<v8::Object> fisheyeConstants = Nan::New<v8::Object>();
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_USE_INTRINSIC_GUESS, Nan::New<v8::Integer>(cv::fisheye::CALIB_USE_INTRINSIC_GUESS));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_RECOMPUTE_EXTRINSIC, Nan::New<v8::Integer>(cv::fisheye::CALIB_RECOMPUTE_EXTRINSIC));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_CHECK_COND, Nan::New<v8::Integer>(cv::fisheye::CALIB_CHECK_COND));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_SKEW, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_SKEW));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_K1, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_K1));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_K2, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_K2));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_K3, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_K3));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_K4, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_K4));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_INTRINSIC, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_INTRINSIC));
+	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_PRINCIPAL_POINT, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_PRINCIPAL_POINT));
+	target->Set(FF_NEW_STRING("fisheye"), fisheyeConstants);
+
 }

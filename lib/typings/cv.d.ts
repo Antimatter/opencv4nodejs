@@ -56,6 +56,12 @@ export function findEssentialMatAsync(points1: Point2[], points2: Point2[], foca
 export function findFundamentalMat(points1: Point2[], points2: Point2[], method?: number, param1?: number, param2?: number): { F: Mat, mask: Mat };
 export function findFundamentalMatAsync(points1: Point2[], points2: Point2[], method?: number, param1?: number, param2?: number): Promise<{ F: Mat, mask: Mat }>;
 export function findHomography(srcPoints: Point2[], dstPoints: Point2[], method?: number, ransacReprojThreshold?: number, maxIters?: number, confidence?: number): { homography: Mat, mask: Mat };
+export function fisheyeCalibrate(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, K: Mat, D: number[], flags?: number, criteria?: TermCriteria): { returnValue: number, rvecs: Vec3[], tvecs: Vec3[], D: number[] };
+export function fisheyeCalibrateAsync(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, K: Mat, D: number[], flags?: number, criteria?: TermCriteria): Promise<{ returnValue: number, rvecs: Vec3[], tvecs: Vec3[], D: number[] }>;
+export function fisheyeInitUndistortRectifyMap(K: Mat, D: number[], R: Mat, P: Mat, size: Size, m1Type: number): { map1: Mat, map2: Mat };
+export function fisheyeInitUndistortRectifyMapAsync(K: Mat, D: number[], R: Mat, P: Mat, size: Size, m1Type: number): Promise<{ map1: Mat, map2: Mat }>;
+export function fisheyeProjectPoints(objectPoints: Point3[], imagePoints: Point2[], rvec: Vec3, tvec: Vec3, K: Mat, D: number[], alpha?: number): { imagePoints: Point2[], jacobian: Mat };
+export function fisheyeProjectPointsAsync(objectPoints: Point3[], imagePoints: Point2[], rvec: Vec3, tvec: Vec3, K: Mat, D: number[], alpha?: number): Promise<{ imagePoints: Point2[], jacobian: Mat }>;
 export function fitLine(points: Point2[], distType: number, param: number, reps: number, aeps: number): number[];
 export function fitLine(points: Point3[], distType: number, param: number, reps: number, aeps: number): number[];
 export function getAffineTransform(srcPoints: Point2[], dstPoints: Point2[]): Mat;
@@ -79,6 +85,8 @@ export function initCameraMatrix2D(objectPoints: Point3[], imagePoints: Point2[]
 export function initCameraMatrix2DAsync(objectPoints: Point3[], imagePoints: Point2[], imageSize: Size, aspectRatio?: number): Promise<Mat>;
 export function initUndistortRectifyMap(cameraMatrix: Mat, distCoeffs: number[], R: Mat, newCameraMatrix: Mat, size: Size, m1Type: number): { map1: Mat, map2: Mat };
 export function initUndistortRectifyMapAsync(cameraMatrix: Mat, distCoeffs: number[], R: Mat, newCameraMatrix: Mat, size: Size, m1Type: number): Promise<{ map1: Mat, map2: Mat }>;
+export function initWideAngleProjMap(cameraMatrix: Mat, distCoeffs: number[], imageSize: Size, destImageWidth: number, m1Type: number, projType?: number, alpha?: number): { map1: Mat, map2: Mat };
+export function initWideAngleProjMapAsync(cameraMatrix: Mat, distCoeffs: number[], imageSize: Size, destImageWidth: number, m1Type: number, projType?: number, alpha?: number): Promise<{ map1: Mat, map2: Mat }>;
 export function kmeans(data: Point2[], k: number, attempts: number, termCriteria: TermCriteria, flags: number): { labels: number[], centers: Point2[] };
 export function loadOCRHMMClassifierCNN(file: string): OCRHMMClassifier;
 export function loadOCRHMMClassifierCNNAsync(file: string): Promise<OCRHMMClassifier>;

@@ -25,6 +25,8 @@ public:
   static NAN_METHOD(GetTextSizeAsync);
   static NAN_METHOD(InitUndistortRectifyMap);
   static NAN_METHOD(InitUndistortRectifyMapAsync);
+  static NAN_METHOD(InitWideAngleProjMap);
+  static NAN_METHOD(InitWideAngleProjMapAsync);
 #if CV_VERSION_MINOR > 1
   static NAN_METHOD(Canny);
 #endif

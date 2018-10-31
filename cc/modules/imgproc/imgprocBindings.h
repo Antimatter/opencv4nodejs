@@ -72,6 +72,61 @@ namespace ImgprocBindings {
     }
   };
 
+  struct InitWideAngleProjMapWorker : public CatchCvExceptionWorker {
+  public:
+    cv::Mat cameraMatrix;
+    std::vector<double> distCoeffs;
+    cv::Size2d imageSize;
+    int destImageWidth;
+    int m1type;
+
+    int projType = cv::PROJ_SPHERICAL_EQRECT;
+    double alpha = 0.0f;
+
+    cv::Mat map1, map2;
+
+    std::string executeCatchCvExceptionWorker() {
+      cv::initWideAngleProjMap(cameraMatrix, distCoeffs, imageSize, destImageWidth, m1type, map1, map2, projType, alpha);
+      return "";
+    }
+
+    v8::Local<v8::Value> getReturnValue() {
+      v8::Local<v8::Object> ret = Nan::New<v8::Object>();
+      Nan::Set(ret, Nan::New("map1").ToLocalChecked(), Mat::Converter::wrap(map1));
+      Nan::Set(ret, Nan::New("map2").ToLocalChecked(), Mat::Converter::wrap(map2));
+      return ret;
+    }
+
+    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        Mat::Converter::arg(0, &cameraMatrix, info) ||
+        DoubleArrayConverter::arg(1, &distCoeffs, info) ||
+        Size::Converter::arg(2, &imageSize, info) ||
+        IntConverter::arg(3, &destImageWidth, info) ||
+        IntConverter::arg(4, &m1type, info)
+      );
+    }
+
+    bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        IntConverter::optArg(5, &projType, info) ||
+        DoubleConverter::optArg(6, &alpha, info)
+      );
+    }
+
+    bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return FF_ARG_IS_OBJECT(5);
+    }
+
+    bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
+      v8::Local<v8::Object> opts = info[5]->ToObject();
+      return (
+        IntConverter::optProp(&projType, "projType", opts) ||
+        DoubleConverter::optProp(&alpha, "alpha", opts)
+      );
+    }
+  };
+
 }
 
 #endif

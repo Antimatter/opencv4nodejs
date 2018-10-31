@@ -442,8 +442,8 @@ export const NORM_L2SQR: number;
 export const NORM_MINMAX: number;
 export const NORM_RELATIVE: number;
 export const NORM_const_MASK: number;
-export const PROJ_SPHERICAL_ORTHO: number;
 export const PROJ_SPHERICAL_EQRECT: number;
+export const PROJ_SPHERICAL_ORTHO: number;
 export const RANSAC: number;
 export const REGULAR: number;
 export const RETR_CCOMP: number;
@@ -587,4 +587,17 @@ export const statModel: {
   PREPROCESSED_INPUT: number;
   RAW_OUTPUT: number;
   UPDATE_MODEL: number;
+}
+
+export const fisheye: {
+  CALIB_USE_INTRINSIC_GUESS: number;
+  CALIB_RECOMPUTE_EXTRINSIC: number;
+  CALIB_CHECK_COND: number;
+  CALIB_FIX_SKEW: number;
+  CALIB_FIX_K1: number;
+  CALIB_FIX_K2: number;
+  CALIB_FIX_K3: number;
+  CALIB_FIX_K4: number;
+  CALIB_FIX_INTRINSIC: number;
+  CALIB_FIX_PRINCIPAL_POINT: number;
 }

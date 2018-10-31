@@ -31,6 +31,8 @@ NAN_MODULE_INIT(Imgproc::Init) {
   Nan::SetMethod(target, "getTextSizeAsync", GetTextSizeAsync);
   Nan::SetMethod(target, "initUndistortRectifyMap", InitUndistortRectifyMap);
   Nan::SetMethod(target, "initUndistortRectifyMapAsync", InitUndistortRectifyMapAsync);
+  Nan::SetMethod(target, "initWideAngleProjMap", InitWideAngleProjMap);
+  Nan::SetMethod(target, "initWideAngleProjMapAsync", InitWideAngleProjMapAsync);
 #if CV_VERSION_MINOR > 1
   Nan::SetMethod(target, "canny", Canny);
 #endif
@@ -290,6 +292,22 @@ NAN_METHOD(Imgproc::InitUndistortRectifyMapAsync) {
   FF::AsyncBinding(
     std::make_shared<ImgprocBindings::InitUndistortRectifyMapWorker>(),
     "Imgproc::InitUndistortRectifyMapAsync",
+    info
+  );
+}
+
+NAN_METHOD(Imgproc::InitWideAngleProjMap) {
+  FF::SyncBinding(
+    std::make_shared<ImgprocBindings::InitWideAngleProjMapWorker>(),
+    "Imgproc::InitWideAngleProjMap",
+    info
+  );
+}
+
+NAN_METHOD(Imgproc::InitWideAngleProjMapAsync) {
+  FF::AsyncBinding(
+    std::make_shared<ImgprocBindings::InitWideAngleProjMapWorker>(),
+    "Imgproc::InitWideAngleProjMapAsync",
     info
   );
 }

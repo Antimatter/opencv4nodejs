@@ -237,6 +237,14 @@ describe('calib3d', () => {
       res.tvecs.forEach(vec => expectToBeVec3(vec));
       expect(res).to.have.property('distCoeffs').to.be.an('array');
     };
+    const expectOutputFisheye = (res) => {
+      expect(res).to.have.property('returnValue').to.be.a('Number');
+      expect(res).to.have.property('rvecs').to.be.an('array').lengthOf(2);
+      res.rvecs.forEach(vec => expectToBeVec3(vec));
+      expect(res).to.have.property('tvecs').to.be.an('array').lengthOf(2);
+      res.tvecs.forEach(vec => expectToBeVec3(vec));
+      expect(res).to.have.property('D').to.be.an('array');
+    };
     const _cameraMatrix = new cv.Mat([
       [800, 0, 100],
       [0, 800, 100],
@@ -255,6 +263,10 @@ describe('calib3d', () => {
     ];
     const getOptionalParamsMap = () => ([
       ['flags', cv.CV_CALIB_USE_INTRINSIC_GUESS],
+      ['termCriteria', new cv.TermCriteria()]
+    ]);
+    const getOptionalParamsMapFisheye = () => ([
+      ['flags', cv.fisheye.CV_CALIB_USE_INTRINSIC_GUESS],
       ['termCriteria', new cv.TermCriteria()]
     ]);
 
@@ -282,6 +294,16 @@ describe('calib3d', () => {
           assertMetaData(res.stdDeviationsExtrinsics)(12, 1, cv.CV_64F);
           expect(res).to.have.property('perViewErrors').to.be.an('array').lengthOf(2);
         }
+      });
+    });
+  
+    (cv.version.minor > 0 ? describe : describe.skip)('fisheyeCalibrate', () => {
+      generateAPITests({
+        getDut: () => cv,
+        methodName: 'fisheyeCalibrate',
+        getRequiredArgs,
+        getOptionalParamsMapFisheye,
+        expectOutput: expectOutputFisheye
       });
     });
   });
@@ -561,6 +583,79 @@ describe('calib3d', () => {
         getOptionalParamsMap,
         expectOutput
       });
+    });
+  });
+
+
+  describe('fisheyeInitUndistortRectifyMap', () => {
+
+    const size = new cv.Size(64, 32);
+    const m1type = cv.CV_32FC1;
+
+    const expectOutput = (rmap) => {
+      assertMetaData(rmap.map1)(size.height, size.width, m1type);
+      assertMetaData(rmap.map2)(size.height, size.width, m1type);
+    };
+
+    const getCameraMatrix = (f) => new cv.Mat(
+      [
+        [f, 0, 0.5*size.width],
+        [0, f, 0.5*size.height],
+        [0, 0, 1]
+      ],
+      cv.CV_64F
+    );
+
+    const rectTransform = new cv.Mat(
+      [
+        [ 1, 0, 0 ],
+        [ 0, 1, 0 ],
+        [ 0, 0, 1 ]
+      ],
+      cv.CV_64F
+    );
+
+    const distCoeffs = [ 0.01, 0, 0, 0 ];
+
+    generateAPITests({
+      getDut: () => cv,
+      methodName: 'fisheyeInitUndistortRectifyMap',
+      getRequiredArgs: () => ([
+        getCameraMatrix(1),
+        distCoeffs,
+        rectTransform,
+        getCameraMatrix(0.8),
+        size,
+        m1type
+      ]),
+      hasAsync: true,
+      expectOutput
+    });
+  });
+
+  describe('fisheyeProjectPoints', () => {
+    const rvec = new cv.Vec(1, 0, 0);
+    const tvec = new cv.Vec(1, 1, 1);
+    const D = [ 0.1, 0.01, 0.001, 0.0001 ];
+    const alpha = 0.01;
+    generateAPITests({
+      getDut: () => cv,
+      methodName: 'fisheyeProjectPoints',
+      getRequiredArgs: () => [
+        objectPoints,
+        rvec,
+        tvec,
+        cv.Mat.eye(3, 3, cv.CV_64F),
+        D
+      ],
+      getOptionalParams: () => ([
+        alpha
+      ]),
+      expectOutput: (res) => {
+        expect(res).to.have.property('imagePoints').to.be.an('array').lengthOf(imagePoints.length);
+        expect(res).to.have.property('jacobian').to.be.instanceOf(cv.Mat);
+        assertMetaData(res.jacobian)(16, 15, cv.CV_64F);
+      }
     });
   });
 });

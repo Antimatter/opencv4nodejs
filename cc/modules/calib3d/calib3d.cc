@@ -46,6 +46,12 @@ NAN_MODULE_INIT(Calib3d::Init) {
   Nan::SetMethod(target, "solveP3P", SolveP3P);
   Nan::SetMethod(target, "solveP3PAsync", SolveP3PAsync);
 #endif
+  Nan::SetMethod(target, "fisheyeInitUndistortRectifyMap", FisheyeInitUndistortRectifyMap);
+  Nan::SetMethod(target, "fisheyeInitUndistortRectifyMapAsync", FisheyeInitUndistortRectifyMapAsync);
+  Nan::SetMethod(target, "fisheyeCalibrate", FisheyeCalibrate);
+  Nan::SetMethod(target, "fisheyeCalibrateAsync", FisheyeCalibrateAsync);
+  Nan::SetMethod(target, "fisheyeProjectPoints", FisheyeProjectPoints);
+  Nan::SetMethod(target, "fisheyeProjectPointsAsync", FisheyeProjectPointsAsync);
 };
 
 
@@ -484,3 +490,51 @@ NAN_METHOD(Calib3d::SolveP3PAsync) {
 }
 
 #endif
+
+NAN_METHOD(Calib3d::FisheyeInitUndistortRectifyMap) {
+  FF::SyncBinding(
+    std::make_shared<Calib3dBindings::FisheyeInitUndistortRectifyMapWorker>(),
+    "Calib3d::FisheyeInitUndistortRectifyMap",
+    info
+  );
+}
+
+NAN_METHOD(Calib3d::FisheyeInitUndistortRectifyMapAsync) {
+  FF::AsyncBinding(
+    std::make_shared<Calib3dBindings::FisheyeInitUndistortRectifyMapWorker>(),
+    "Calib3d::FisheyeInitUndistortRectifyMapAsync",
+    info
+  );
+}
+
+NAN_METHOD(Calib3d::FisheyeCalibrate) {
+  FF::SyncBinding(
+    std::make_shared<Calib3dBindings::FisheyeCalibrateWorker>(),
+    "Calib3d::FisheyeCalibrate",
+    info
+  );
+}
+
+NAN_METHOD(Calib3d::FisheyeCalibrateAsync) {
+  FF::AsyncBinding(
+    std::make_shared<Calib3dBindings::FisheyeCalibrateWorker>(),
+    "Calib3d::FisheyeCalibrateAsync",
+    info
+  );
+}
+
+NAN_METHOD(Calib3d::FisheyeProjectPoints) {
+  FF::SyncBinding(
+    std::make_shared<Calib3dBindings::FisheyeProjectPointsWorker>(),
+    "Calib3d::FisheyeProjectPoints",
+    info
+  );
+}
+
+NAN_METHOD(Calib3d::FisheyeProjectPointsAsync) {
+  FF::AsyncBinding(
+    std::make_shared<Calib3dBindings::FisheyeProjectPointsWorker>(),
+    "Calib3d::FisheyeProjectPointsAsync",
+    info
+  );
+}

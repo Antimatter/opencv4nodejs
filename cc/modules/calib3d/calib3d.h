@@ -52,6 +52,12 @@ public:
   static NAN_METHOD(SolveP3P);
   static NAN_METHOD(SolveP3PAsync);
 #endif
+  static NAN_METHOD(FisheyeInitUndistortRectifyMap);
+  static NAN_METHOD(FisheyeInitUndistortRectifyMapAsync);
+  static NAN_METHOD(FisheyeCalibrate);
+  static NAN_METHOD(FisheyeCalibrateAsync);
+  static NAN_METHOD(FisheyeProjectPoints);
+  static NAN_METHOD(FisheyeProjectPointsAsync);
 };
 
 #endif
