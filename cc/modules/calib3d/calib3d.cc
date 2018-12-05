@@ -1,6 +1,11 @@
 #include "calib3d.h"
+#include "StereoBM.h"
+#include "StereoSGBM.h"
 
 NAN_MODULE_INIT(Calib3d::Init) {
+  StereoBM::Init(target);
+  StereoSGBM::Init(target);
+
   Nan::SetMethod(target, "findHomography", FindHomography);
   Nan::SetMethod(target, "composeRT", ComposeRT);
   Nan::SetMethod(target, "composeRTAsync", ComposeRTAsync);

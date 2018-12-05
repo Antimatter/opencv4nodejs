@@ -226,4 +226,11 @@ void CvTypes::Init(v8::Local<v8::Object> target) {
 	FF_SET_JS_PROP(fisheyeConstants, CALIB_FIX_PRINCIPAL_POINT, Nan::New<v8::Integer>(cv::fisheye::CALIB_FIX_PRINCIPAL_POINT));
 	target->Set(FF_NEW_STRING("fisheye"), fisheyeConstants);
 
+	FF_SET_JS_PROP(target, PREFILTER_NORMALIZED_RESPONSE, Nan::New<v8::Integer>(cv::StereoBM::PREFILTER_NORMALIZED_RESPONSE));
+	FF_SET_JS_PROP(target, PREFILTER_XSOBEL, Nan::New<v8::Integer>(cv::StereoBM::PREFILTER_XSOBEL));
+
+	FF_SET_JS_PROP(target, STEREOSGBM_MODE_SGBM, Nan::New<v8::Integer>(cv::StereoSGBM::MODE_SGBM));
+	FF_SET_JS_PROP(target, STEREOSGBM_MODE_HH, Nan::New<v8::Integer>(cv::StereoSGBM::MODE_HH));
+	FF_SET_JS_PROP(target, STEREOSGBM_MODE_SGBM_3WAY, Nan::New<v8::Integer>(cv::StereoSGBM::MODE_SGBM_3WAY));
+	FF_SET_JS_PROP(target, STEREOSGBM_MODE_HH4, Nan::New<v8::Integer>(cv::StereoSGBM::MODE_HH4));
 }
