@@ -112,6 +112,8 @@ void MatImgproc::Init(v8::Local<v8::FunctionTemplate> ctor) {
   Nan::SetPrototypeMethod(ctor, "undistortAsync", UndistortAsync);
   Nan::SetPrototypeMethod(ctor, "remap", Remap);
   Nan::SetPrototypeMethod(ctor, "remapAsync", RemapAsync);
+  Nan::SetPrototypeMethod(ctor, "undistortPoints", UndistortPoints);
+  Nan::SetPrototypeMethod(ctor, "undistortPointsAsync", UndistortPointsAsync);
 };
 
 NAN_METHOD(MatImgproc::DrawContours) {
@@ -1026,6 +1028,22 @@ NAN_METHOD(MatImgproc::RemapAsync) {
   FF::AsyncBinding(
     std::make_shared<MatImgprocBindings::RemapWorker>(Mat::Converter::unwrap(info.This())),
     "Mat::RemapAsync",
+    info
+  );
+}
+
+NAN_METHOD(MatImgproc::UndistortPoints) {
+  FF::SyncBinding(
+    std::make_shared<MatImgprocBindings::UndistortPointsWorker>(Mat::Converter::unwrap(info.This())),
+    "Mat::UndistortPoints",
+    info
+  );
+}
+
+NAN_METHOD(MatImgproc::UndistortPointsAsync) {
+  FF::AsyncBinding(
+    std::make_shared<MatImgprocBindings::UndistortPointsWorker>(Mat::Converter::unwrap(info.This())),
+    "Mat::UndistortPointsAsync",
     info
   );
 }

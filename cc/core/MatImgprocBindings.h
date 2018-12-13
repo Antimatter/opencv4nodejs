@@ -2233,6 +2233,60 @@ namespace MatImgprocBindings {
       );
     }
   };
+
+  struct UndistortPointsWorker: public CatchCvExceptionWorker {
+  public:
+    cv::Mat src;
+
+    UndistortPointsWorker(cv::Mat src) {
+      this->src = src;
+    }
+
+    cv::Mat cameraMatrix;
+    std::vector<double> distCoeffs;
+    cv::Mat R = cv::noArray().getMat();
+    cv::Mat P = cv::noArray().getMat();
+    cv::TermCriteria criteria = cv::TermCriteria(cv::TermCriteria::COUNT, 5, 0.0);
+
+    cv::Mat dst;
+
+    std::string executeCatchCvExceptionWorker() {
+      cv::undistortPoints(src, dst, cameraMatrix, distCoeffs, R, P, criteria);
+      return "";
+    }
+
+    FF_VAL getReturnValue() {
+      return Mat::Converter::wrap(dst);
+    }
+
+    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        Mat::Converter::arg(0, &cameraMatrix, info) ||
+        DoubleArrayConverter::arg(1, &distCoeffs, info)
+      );
+    }
+
+    bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return (
+        Mat::Converter::optArg(2, &R, info) ||
+        Mat::Converter::optArg(3, &P, info) ||
+        TermCriteria::Converter::optArg(4, &criteria, info)
+      );
+    }
+
+    bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
+      return FF_ARG_IS_OBJECT(2) && !Mat::Converter::hasInstance(info[2]);
+    }
+
+    bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
+      FF_OBJ opts = info[2]->ToObject();
+      return (
+        Mat::Converter::optProp(&R, "R", opts) ||
+        Mat::Converter::optProp(&P, "P", opts) ||
+        TermCriteria::Converter::optProp(&criteria, "criteria", opts)
+      );
+    }
+  };
 }
 
 #endif

@@ -121,6 +121,8 @@ public:
   static NAN_METHOD(UndistortAsync);
   static NAN_METHOD(Remap);
   static NAN_METHOD(RemapAsync);
+  static NAN_METHOD(UndistortPoints);
+  static NAN_METHOD(UndistortPointsAsync);
 };
 
 #endif
