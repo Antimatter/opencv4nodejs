@@ -75,6 +75,7 @@ NAN_METHOD(Io::Imshow) {
     FF_THROW("expected arg1 to be an instance of Mat");
   }
   cv::imshow(FF_CAST_STRING(info[0]), FF_UNWRAP_MAT_AND_GET(info[1]->ToObject(Nan::GetCurrentContext()).ToLocalChecked()));
+  cv::waitKey(1);
 }
 
 NAN_METHOD(Io::ImshowWait) {
